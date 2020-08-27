@@ -85,26 +85,25 @@ public class Test {
             num = num + 1;
         }
         System.out.println("     "+"不需要"+ "("+num+")"+"------------- ");
+        syrup_num.put(num,"不需要");
 
         System.out.println("请依次输入您需要添加的糖浆编号：（以空格分隔多种糖浆）");
 
 
         List<String> syrups = new ArrayList<>();//选择的糖浆名称列表
-        
-
-        while(scan.hasNext()) {
-            for (int i=0;i<scan.nextLine().split(" ").length;i++){
-                String s = scan.nextLine().split(" ")[i];
-                syrups.add(syrup_num.get(Integer.parseInt(s)));
-            }
+        scan.nextLine();
+        String line = scan.nextLine();
+        for (int i=0;i<line.split(" ").length;i++){
+            String s = line.split(" ")[i];
+            syrups.add(syrup_num.get(Integer.parseInt(s)));
         }
 
 
         System.out.println("请依次输入您需要添加的糖浆份数：（以空格分隔多种糖浆）");
-
+        line = scan.nextLine();
         List<Integer> syrups_num = new ArrayList<>();//选择的糖浆份数列表
-        for (int i=0;i<scan.nextLine().split(" ").length;i++){
-            syrups_num.add(Integer.parseInt(scan.nextLine().split(" ")[i]));
+        for (int i=0;i<line.split(" ").length;i++){
+            syrups_num.add(Integer.parseInt(line.split(" ")[i]));
         }
 
 
@@ -121,54 +120,45 @@ public class Test {
         num = 1;
         for (String sauce : Sauce_price.keySet()) {
             System.out.println("     "+sauce + "("+num+")"+"------------- "+Sauce_price.get(sauce)+"元") ;
-            syrup_num.put(num, sauce);
+            sauce_num.put(num, sauce);
             num = num + 1;
         }
         System.out.println("     "+"不需要"+ "("+num+")"+"------------- ");
+        sauce_num.put(num,"不需要");
 
         System.out.println("请依次输入您需要添加的淋酱编号：（以空格分隔多种淋酱）");
 
-        List<String> sauces = new ArrayList<>();//选择的糖浆名称列表
-        for (int i=0;i<scan.nextLine().split(" ").length;i++){
-            sauces.add(sauce_num.get(Integer.parseInt(scan.nextLine().split(" ")[i])));
+        List<String> sauces = new ArrayList<>();//选择的淋酱名称列表
+        line = scan.nextLine();
+        for (int i=0;i<line.split(" ").length;i++){
+            String s = line.split(" ")[i];
+            sauces.add(sauce_num.get(Integer.parseInt(s)));
         }
-
-        System.out.println("请依次输入您需要添加的淋酱份数：（以空格分隔多种糖浆）");
-
-        List<Integer> sauces_num = new ArrayList<>();//选择的糖浆份数列表
-        for (int i=0;i<scan.nextLine().split(" ").length;i++){
-            sauces_num.add(Integer.parseInt(scan.nextLine().split(" ")[i]));
-        }
-
         Map<String, Integer> sauceNum = new HashMap<>();
         for (int i=0; i< sauces.size();i++){
-            syrupNum.put(sauces.get(i),syrups_num.get(i));
+            sauceNum.put(sauces.get(i),1);
         }
 
-        Coffee coffee = new CoffeeFactory().getCoffee(
-                coffeeType, cupSize, temp, milk
-        );
-        System.out.println(coffee.computePrice());
+        Coffee coffee;
+        if(syrups.size() == 1 && syrups.get(0).equals("不需要")) {
+            if(sauces.size() == 1 && sauces.get(0).equals("不需要")){
+                coffee = new CoffeeFactory().getCoffee(coffeeType, cupSize, temp, milk);
+            } else {
+                coffee = new CoffeeFactory().getSauceCoffee(coffeeType, cupSize, temp, milk, sauceNum);
+            }
+        } else {
+            if(sauces.size() == 1 && sauces.get(0).equals("不需要")){
+                coffee = new CoffeeFactory().getSyrupCoffee(coffeeType, cupSize, temp,milk,syrupNum);
+            } else {
+                coffee = new CoffeeFactory().getSyrupAndSauceCoffee(coffeeType,cupSize,temp,milk,syrupNum,sauceNum);
+            }
+        }
+
+        System.out.println("\n您需要支付的价格是："+ coffee.computePrice());
 
 
 
 
-
-
-
-
-
-
-//        Coffee coffee = new CoffeeFactory().getCustomizationCoffee("美式咖啡", "Medium", "热",
-//                 "WholeMilk");
-//
-//        Map sauceNum = new HashMap();
-//        sauceNum.put("Caramel",3);
-//
-//        Coffee Saucecoffee = new CoffeeFactory().getCustomizationCoffee("美式咖啡", "Medium", "热",
-//                "WholeMilk", sauceNum);
-//
-//        System.out.println(Saucecoffee.computePrice());
 
 
 
